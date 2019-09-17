@@ -6,6 +6,25 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+library(fivethirtyeight)
+library(ggthemes)
+```
+```{r}
+data("congress_age")
+
+congress_age %>%
+  mutate(year = format(termstart, "%Y")) %>%
+  filter(party %in% c("R", "D")) %>%
+  group_by(party, year) %>%
+  summarize(avg = mean(age)) %>%
+  
+  ggplot(aes(x = year, y = avg, group = party, color = party)) +
+    geom_line() + 
+    labs(title = "Average Age of Members of Congress",
+         subtitle = "At start of term, 1947-2013",
+         source = "538 R Package") +
+  theme_fivethirtyeight() +
+  scale_x_continuous(breaks = seq(1950, 2010, 10), lim = c(1950, 2010))
 ```
 
